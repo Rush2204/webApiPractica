@@ -23,16 +23,23 @@ namespace Practica1.Controllers
         [HttpGet]
         [Route("GetAll")]
         public IActionResult Get() 
-        { 
-            List<equipos> listadoEquipo = (from e in _equiposContexto.equipos select e).ToList();
-
-            if(listadoEquipo.Count == 0)
+        {
+            try
             {
-                return NotFound();
+                List<equipos> listadoEquipo = (from e in _equiposContexto.equipos select e).ToList();
+
+                if (listadoEquipo.Count == 0)
+                {
+                    return NotFound();
+                }
+
+                return Ok(listadoEquipo);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
             }
 
-            return Ok(listadoEquipo);
-        
         }
 
     }
