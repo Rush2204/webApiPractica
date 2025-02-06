@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Practica1.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
 
 namespace Practica1.Controllers
 {
@@ -128,6 +129,33 @@ namespace Practica1.Controllers
             _equiposContexto.SaveChanges();
 
             return Ok(equipoModificar);
+        }
+
+        ///<summary>
+        /// metodo para eliminar registro
+        ///</summary>
+        ///
+        [HttpDelete]
+        [Route("eliminar/{id}")]
+        public IActionResult EliminarEquipo(int id)
+        {
+            //Para actualizar un registro, se obtiene el registro original de la BD al cual eliminaremos
+            equipos? equipo = (from e in _equiposContexto.equipos
+                               where e.id_equipos == id
+                               select e).FirstOrDefault();
+
+            //verificamos que exista el registro por su ID
+            if (equipo == null)
+            {
+                return NotFound();
+            }
+
+            //ejecutamos la accion de eliminar el registro
+            _equiposContexto.equipos.Attach(equipo);    
+            _equiposContexto.equipos.Remove(equipo);
+            _equiposContexto.SaveChanges();
+
+            return Ok(equipo);
         }
     }
 }
