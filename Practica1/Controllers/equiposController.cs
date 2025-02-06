@@ -76,5 +76,24 @@ namespace Practica1.Controllers
             return Ok(equipo);
         }
 
-    } 
+        ///<summary>
+        /// metodo para guardar un registro en la BD
+        ///</summary>
+        ///
+        [HttpPost]
+        [Route("add")]
+        public IActionResult GuardarEquipo([FromBody] equipos equipo) 
+        {
+            try
+            {
+                _equiposContexto.equipos.Add(equipo);
+                _equiposContexto.SaveChanges();
+                return Ok(equipo);
+            }
+            catch (Exception ex) 
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+    }
 }
