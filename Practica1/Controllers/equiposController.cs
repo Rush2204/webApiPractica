@@ -95,5 +95,39 @@ namespace Practica1.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        ///<summary>
+        /// metodo para actualizar un registro por Id en la BD
+        ///</summary>
+        ///
+        [HttpPut]
+        [Route("actualizar/{id}")]
+        public IActionResult ActualizarEquipo(int id, [FromBody] equipos equipoModificar)
+        {
+            //Para actualizar un registro, se obtiene el registro original de la BD al cual alteraremos alguna propiedad
+            equipos? equipoActual = (from e in _equiposContexto.equipos
+                                     where e.id_equipos == id
+                                     select e).FirstOrDefault();
+
+             //verificamos que exista el registro segun id
+             if(equipoActual == null)
+            {
+                return NotFound();
+            }
+
+            //si se encuentra el registro, se alteran los campos modificables
+            equipoActual.nombre = equipoModificar.nombre;
+            equipoActual.descripcion = equipoModificar.descripcion;
+            equipoActual.marca_id = equipoModificar.marca_id;
+            equipoActual.tipo_equipo_id = equipoModificar.tipo_equipo_id;
+            equipoActual.anio_compra = equipoModificar.anio_compra;
+            equipoActual.costo = equipoModificar.costo;
+
+            //se marca el registro como modificado en el contexto y se envia la modificacion a la BD
+            _equiposContexto.Entry(equipoActual).State = EntityState.Modified;
+            _equiposContexto.SaveChanges();
+
+            return Ok(equipoModificar);
+        }
     }
 }
