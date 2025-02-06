@@ -55,5 +55,26 @@ namespace Practica1.Controllers
             return Ok(equipo);
         }
 
+        ///<summary>
+        /// EndPoint que retorna registros de una tabla filtrados por descripcion
+        ///</summary>
+        ///<param name="id"></param>
+        ///<returns></returns>
+
+        [HttpGet]
+        [Route("Find/{filtro}")]
+        public IActionResult FindByDescription(string filro) 
+        {
+            equipos? equipo = (from e in _equiposContexto.equipos
+                               where e.descripcion.Contains(filro)
+                               select e).FirstOrDefault();
+            if (equipo == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(equipo);
+        }
+
     } 
 }
